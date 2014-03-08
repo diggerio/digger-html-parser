@@ -1,0 +1,31 @@
+{
+  "name": "digger-html-parser",
+  "version": "0.0.1",
+  "description": "Process front-matter in .html files that loads data for ejs templates to use",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diggerio/digger-html-parser.git"
+  },
+  "keywords": [
+    "html",
+    "parser",
+    "digger"
+  ],
+  "author": "Kai Davenport",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/diggerio/digger-html-parser/issues"
+  },
+  "homepage": "https://github.com/diggerio/digger-html-parser",
+  "dependencies": {
+    "ejs": "~0.8.5",
+    "ecstatic": "~0.4.13",
+    "front-matter": "~0.2.0",
+    "deep-extend": "~0.2.8",
+    "async": "~0.2.10"
+  }
+}
