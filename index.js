@@ -37,6 +37,10 @@ module.exports = function(options){
 		return function(req, res, next){
 			var path = url.parse(req.url).pathname;
 
+			if(path.match(/\/$/)){
+				path += 'index.html';
+			}
+
 			if(path.match(/\.html?$/)){
 				fs.readFile(document_root + path, 'utf8', function(error, html){
 					if(error){
