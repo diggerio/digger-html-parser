@@ -70,7 +70,7 @@ module.exports = function(options){
 
 						attributes.filename = document_root + path;
 
-						api.emit('render', path, attributes, function(error, pagedata){
+						api.emit('render', path, attributes, function(error){
 							if(error){
 								res.statusCode = 500;
 								res.send(error.toString());
