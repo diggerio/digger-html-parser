@@ -29,8 +29,6 @@ module.exports = function($digger, options){
 
 	api.load_selectors = function(selectors, done){
 
-		console.log('-------------------------------------------');
-		console.dir(selectors);
 		var results = {};
 
 		async.forEach(Object.keys(selectors || {}), function(name, next){
@@ -39,7 +37,7 @@ module.exports = function($digger, options){
 			var usewarehouse = warehouse;
 			if(selector.charAt(0)=='/'){
 				var parts = selector.split(/\s/);
-				usewarehouse = parts[0];
+				usewarehouse = parts.shift();
 				selector = parts.join(' ');
 			}
 
@@ -51,6 +49,7 @@ module.exports = function($digger, options){
 			})
 			.ship(function(r){
 				results[name] = r;
+				next();
 			})
 		}, function(error){
 			if(error){
@@ -86,7 +85,7 @@ module.exports = function($digger, options){
 		}
 
 		return {
-			html:html,
+			body:html,
 			selectors:selectors
 		};
 	}
@@ -110,30 +109,27 @@ module.exports = function($digger, options){
 					}
 
 					var parsed = self.parse_html(html);
-						
 
 					console.log('-------------------------------------------');
-					console.dir(parsed);
-					res.send('ok');
-					return;
+					console.dir(parsed.selectors);
 
-					self.load_selectors(selectors, function(error, results){
+					self.load_selectors(parsed.selectors, function(error, results){
 						if(error){
 							res.statusCode = 500;
 							res.end(error.toString());
 							return;
 						}
 
-						attributes.filename = document_root + path;
+						results.filename = document_root + path;
 
-						api.emit('render', path, attributes, function(error){
+						api.emit('render', path, results, function(error){
 							if(error){
 								res.statusCode = 500;
 								res.send(error.toString());
 								return;
 							}
 							try{
-								var html = ejs.render(page.body, attributes);
+								var html = ejs.render(parsed.body, results);
 								res.send(html);
 							} catch(e){
 								res.statusCode = 500;
