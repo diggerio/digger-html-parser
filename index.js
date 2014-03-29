@@ -67,9 +67,11 @@ module.exports = function($digger, options){
 		})
 	}
 
-	api.parse_html = function(html){
+	api.parse_html = function(html, query){
 
 		var frontmatter = null;
+
+		query = query || {};
 
 		var html = html.replace(/^---[\w\W]+?---\n?/, function(match){
 			frontmatter = match;
@@ -82,9 +84,17 @@ module.exports = function($digger, options){
 			frontmatter = frontmatter.replace(/---/g, '');
 			var lines = frontmatter.split(/\n/);
 			lines.forEach(function(line){
+				if(!line || !line.match(/.+/)){
+					return;
+				}
 				var parts = line.split(/:/);
 				var name = parts.shift();
 				var value = parts.join(':').replace(/^\s+/, '');
+
+				value = (value || '').replace(/\{\{\s*(\w+)\s*\}\}/g, function(match, id){
+					return query[id];
+				})
+
 				if(name && name.match(/\w/)){
 					selectors[name] = value;	
 				}
@@ -110,10 +120,6 @@ module.exports = function($digger, options){
 
 			if(path.match(/\.html?$/)){
 
-				console.log('-------------------------------------------');
-				console.dir(req.query);
-
-
 				fs.readFile(document_root + path, 'utf8', function(error, html){
 					if(error){
 						res.statusCode = 500;
@@ -121,7 +127,7 @@ module.exports = function($digger, options){
 						return;
 					}
 
-					var parsed = self.parse_html(html);
+					var parsed = self.parse_html(html, req.query);
 
 					self.load_selectors(parsed.selectors, function(error, results){
 						if(error){
