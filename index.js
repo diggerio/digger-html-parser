@@ -22,6 +22,10 @@ module.exports = function($digger, options){
 		ejs.close = options.close;
 	}
 
+	var filter = options.filter || function(){
+		return true;
+	}
+
 	var document_root = options.document_root;
 	var warehouse = options.warehouse;
 
@@ -118,7 +122,7 @@ module.exports = function($digger, options){
 				path += 'index.html';
 			}
 
-			if(path.match(/\.html?$/)){
+			if(path.match(/\.html?$/) && filter(path)){
 
 				fs.readFile(document_root + path, 'utf8', function(error, html){
 					if(error){
