@@ -22,6 +22,14 @@ module.exports = function($digger, options){
 		ejs.close = options.close;
 	}
 
+	if(options.filters){
+
+		Object.keys(options.filters).forEach(function(k){
+			ejs.filters[k] = options.filters[k];
+		})
+		
+	}
+
 	var filter = options.filter || function(){
 		return true;
 	}
