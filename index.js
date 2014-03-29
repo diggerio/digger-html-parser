@@ -14,6 +14,14 @@ module.exports = function($digger, options){
 
 	options = options || {};
 
+	if(options.open){
+		ejs.open = options.open;
+	}
+
+	if(options.close){
+		ejs.close = options.close;
+	}
+
 	var document_root = options.document_root;
 	var warehouse = options.warehouse;
 
@@ -95,12 +103,17 @@ module.exports = function($digger, options){
 		var self = this;
 		return function(req, res, next){
 			var path = url.parse(req.url).pathname;
-
+		
 			if(path.match(/\/$/)){
 				path += 'index.html';
 			}
 
 			if(path.match(/\.html?$/)){
+
+				console.log('-------------------------------------------');
+				console.dir(req.query);
+
+
 				fs.readFile(document_root + path, 'utf8', function(error, html){
 					if(error){
 						res.statusCode = 500;
@@ -109,9 +122,6 @@ module.exports = function($digger, options){
 					}
 
 					var parsed = self.parse_html(html);
-
-					console.log('-------------------------------------------');
-					console.dir(parsed.selectors);
 
 					self.load_selectors(parsed.selectors, function(error, results){
 						if(error){
